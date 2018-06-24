@@ -285,14 +285,10 @@ class POVpanel(wx.Panel):
 		self.SolarSystem.currentPOVselection = {0: "CUROBJ", 1: "SUN", 2:"EARTH", 3:"MERCURY", 4:"VENUS",
 												5: "MARS", 6:"JUPITER", 7:"SATURN", 8:"URANUS", 9:"NEPTUNE",
 												10:"PLUTO", 11:"SEDNA", 12:"MAKEMAKE", 13:"HAUMEA",14:"ERIS"}[index]
-		{0:	self.setCurrentBodyFocus, 1: self.setSunFocus,
-		 2: self.setPlanetFocus, 3: self.setPlanetFocus,
-		 4: self.setPlanetFocus, 5: self.setPlanetFocus,
-		 6: self.setPlanetFocus, 7: self.setPlanetFocus,
-		 8: self.setPlanetFocus, 9: self.setPlanetFocus,
-		 10: self.setPlanetFocus, 11: self.setPlanetFocus,
-		 12: self.setPlanetFocus, 13: self.setPlanetFocus,
-		 14: self.setPlanetFocus }[index]()
+		try:
+			{0:	self.setCurrentBodyFocus, 1: self.setSunFocus}[index]()
+		except KeyError:
+			self.setPlanetFocus()
 
 		self.setLocalRef()
 
