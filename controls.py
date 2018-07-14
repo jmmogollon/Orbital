@@ -581,9 +581,11 @@ class orbitalCtrlPanel(wx.Panel):
 		self.dateYSpin = wx.SpinCtrl(self, id=wx.ID_ANY, initial=self.todayDate.year, min=-3000, max=3000, pos=(330, DATE_SLD_Y), size=(65, 25), style=wx.SP_ARROW_KEYS)
 		self.dateYSpin.Bind(wx.EVT_SPINCTRL,self.OnTimeSpin)
 
-		self.ValidateDate = wx.Button(self, label='Set', pos=(400, DATE_SLD_Y), size=(60, 25))
+		self.ValidateDate = wx.Button(self, label='Set', pos=(400, DATE_SLD_Y), size=(30, 25))
 		self.ValidateDate.Bind(wx.EVT_BUTTON, self.OnValidateDate)
 
+		self.ValidateDate = wx.Button(self, label='Tdy', pos=(435, DATE_SLD_Y), size=(30, 25))
+		self.ValidateDate.Bind(wx.EVT_BUTTON, self.OnSetToday)
 
 		self.createCheckBox(self, "Inner Planets", INNERPLANET, 20, INNER_Y)
 		self.createCheckBox(self, "Orbits", ORBITS, 20, ORB_Y)
@@ -682,14 +684,20 @@ class orbitalCtrlPanel(wx.Panel):
 						self.velocity = velocity
 						self.distance = distance
 
-	def OnValidateDate(self, e):
-		newdate = datetime.date(self.dateYSpin.GetValue(),self.dateMSpin.GetValue(),self.dateDSpin.GetValue())
+	def OnValidateDate(self, e, today=False):
+		if not today:
+			newdate = datetime.date(self.dateYSpin.GetValue(),self.dateMSpin.GetValue(),self.dateDSpin.GetValue())
+		else:
+			newdate = self.todayDate
 		self.DeltaT = (newdate - self.todayDate).days
 		self.OneTimeIncrement()
 		self.disableBeltsForAnimation()
 		self.DeltaT -= self.TimeIncrement
 
 		self.refreshDate()
+
+	def OnSetToday(self, e):
+		self.OnValidateDate(e, today=True)
 
 	def setVelocityLabel(self):
 		if self.DetailsOn == True:
@@ -745,7 +753,7 @@ class orbitalCtrlPanel(wx.Panel):
 		# copy time increment to solarsystem class for realtime update
 		self.SolarSystem.setTimeIncrement(self.TimeIncrement)
 		#self.aniSpeed.SetLabel(setPrecision(str(self.TimeIncrement), 2)+" d")
-		self.aniSpeed.SetLabel(str(self.aniSlider.GetValue()*10)+" mi")
+		self.aniSpeed.SetLabel(str(self.aniSlider.GetValue()*5)+" mi")
 		return
 
 	def OnTimeSpin(self, e):
